@@ -210,7 +210,7 @@ bedtools intersect -a peaks_rep1.bed -b peaks_rep2.bed > common_peaks.bed
 ### Peak Annotation
 Often once you have a peak set from your ChIP-seq experiment, you want to find out where these peaks are (genomic location, what is the closest gene etc).
 
-There are many tools for this but two I typically use: HOMER annotatePeaks.pl and ChIPseeker (R package). They can both annotate peaks with their genomic location (Intron, Exon, TSS, Intergenic etc), and the closest gene and more. This can also be a decent quality control measure as you expect a large proportion of peaks (and a heavy enrichment) in promoter regions. 
+There are many tools for this but two I typically use: HOMER annotatePeaks.pl and ChIPseeker (R package). They can both annotate peaks with their genomic location (Intron, Exon, TSS, Intergenic etc), and the closest gene and more. This can also be a decent quality control measure as you expect a large proportion of peaks (and a strong enrichment) in promoter regions. 
 
 ### Motif Analysis
 
