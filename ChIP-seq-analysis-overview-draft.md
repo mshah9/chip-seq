@@ -177,11 +177,13 @@ samtools view –u -@ {cores} –q 10 {alignedfile.sam} | samtools sort –O bam
 
 ### Removing PCR and optical duplicates
 
-The next step after alignment is generally removing duplicates. As ChIP-seq involves PCR during library prep, there is the chance that multiple sequencing reads align from the same DNA fragment. This can artificially increase the signal at speicifc location. There are many arguments whether one should or should not remove duplicates for ChIP-seq data. It is argued that removing duplicates can result in loss of signal. This is as TFs typically bind short regions and not many regions genome wide which may naturally result in identical fragments producing multiple identical sequencing reads. This can also largely depend on sequencing depth, if you keep increase sequencing depth (at least generally for most TFs), you will get more duplicates because there is a limited amount of DNA. 
+The next step after alignment is generally removing duplicates. As ChIP-seq involves PCR during library prep, there is the chance that multiple sequencing reads arise from the same DNA fragment. This can artificially increase the signal at speicifc location. There are many arguments on whether one should or should not remove duplicates for ChIP-seq data. It is argued that removing duplicates can result in loss of signal. This is as TFs typically bind short regions and not many regions genome wide which may naturally result in identical fragments producing multiple identical sequencing reads. This can also largely depend on sequencing depth, if you keep increase sequencing depth (at least generally for most TFs), you will get more duplicates because there is a limited amount of DNA. 
 
 In general, I will examine alignment files with both duplicates removed and not removed. In my experience, I have also found that peak calling works much better when duplicates are removed. However, there are cases where it is recommended to not remove duplicates such as when doing differential binding analysis. 
 
-##Peak Calling 
+## Visualising ChIP-seq aligned reads/coverage
+
+## Peak Calling 
 
 Next, we perform peak calling, i.e., calling regions of enrichment over background. These represent our binding events (in the case of TFs). There are some differences here when calling peaks for TFs vs histone marks (and different peak callers that are supposedly better for one vs the other).
 
@@ -191,4 +193,30 @@ Other options for peak callers include SPP (recommended and used by ENCODE in co
 
 Some people recommend peak calling using multiple peak callers and then taking the common set of peaks. 
 
-I find it critical regardless of whatever peak caller you use to physically inspect the peaks in IGV or similar to ensure they make sense. Doing this, I have spotted all kinds of oddities, bad thresholds and more. Typically, I will check some of the top peaks, some random ones in the middle and then the least significant peaks (to see if the treshold seems reasonable). The threshold you use can often depend on antibody, IP efficiency, background etc. 
+I find it critical regardless of whatever peak caller you use to physically inspect the peaks in IGV or similar to ensure they make sense. Doing this, I have spotted all kinds of oddities, bad thresholds and more. Typically, I will check some of the top peaks, some random ones in the middle and then the least significant peaks (to see if the threshold seems reasonable). The threshold you use can often depend on antibody, IP efficiency, background etc. 
+
+### Dealing with Replicates
+You will often (and should) have replicates, so how do you deal with them when it comes to peak calling? 
+
+I have in the past used IDR analysis developed by ENCODE, however, this seems to work best with SPP (which as mentioned is quite slow). Usually now, I tend to use MACS2 peak calling on each replicate and then taking the overlap of the peaks using bedtools intersect. 
+
+``` bash
+bedtools intersect -a peaks_rep1.bed -b peaks_rep2.bed > common_peaks.bed
+```
+
+### Peak Overlap
+
+
+### Peak Annotation
+Often once you have a peak set from your ChIP-seq experiment, you want to find out where these peaks are (genomic location, what is the closest gene etc).
+
+There are many tools for this but two I typically use: HOMER annotatePeaks.pl and ChIPseeker (R package). They can both annotate peaks with their genomic location (Intron, Exon, TSS, Intergenic etc), and the closest gene and more. This can also be a decent quality control measure as you expect a large proportion of peaks (and a heavy enrichment) in promoter regions. 
+
+### Motif Analysis
+
+
+
+
+## Differential Binding Analysis
+
+
